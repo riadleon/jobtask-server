@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -18,22 +17,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const categoryCollection = client.db('waveyJAM').collection('categories');
-        const productCollection = client.db('waveyJAM').collection('products');
+        const sectorCollection = client.db('jobtask').collection('sectors');
 
 
-        app.get('/categories', async (req, res) => {
+
+        app.get('/sectors', async (req, res) => {
             const query = {}
-            const cursor = categoryCollection.find(query);
-            const categories = await cursor.toArray();
-            res.send(categories);
+            const cursor = sectorCollection.find(query);
+            const sectors = await cursor.toArray();
+            res.send(sectors);
         });
-        app.get('/categories/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { id: id };
-            const product = await productCollection.find(query).toArray();
-            res.send(product);
-        })
+        // app.get('/categories/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { id: id };
+        //     const product = await productCollection.find(query).toArray();
+        //     res.send(product);
+        // })
 
 
 
