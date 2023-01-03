@@ -18,6 +18,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const sectorCollection = client.db('jobtask').collection('sectors');
+        const storedCollection = client.db('jobtask').collection('stored');
 
 
 
@@ -27,12 +28,14 @@ async function run() {
             const sectors = await cursor.toArray();
             res.send(sectors);
         });
-        // app.get('/categories/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { id: id };
-        //     const product = await productCollection.find(query).toArray();
-        //     res.send(product);
-        // })
+
+        app.put('/storing', async (req, res) => {
+            const store = req.body;
+            const result = await storedCollection.insertOne(store);
+            res.send(result);
+            console.log('Data added successfully...');
+        });
+
 
 
 
