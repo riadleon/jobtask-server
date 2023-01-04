@@ -29,12 +29,58 @@ async function run() {
             res.send(sectors);
         });
 
-        app.put('/storing', async (req, res) => {
+        app.post('/storing', async (req, res) => {
             const store = req.body;
             const result = await storedCollection.insertOne(store);
             res.send(result);
             console.log('Data added successfully...');
         });
+
+        app.get('/storing/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const store = await storedCollection.findOne(query);
+            res.send(store);
+        });
+
+        app.patch('/storing/:id', async (req, res) => {
+            const { id } = req.params;
+
+            try {
+                const result = await storedCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
+
+                if (result.matchedCount) {
+                    res.send({
+                        success: true,
+                        message: `successfully updated ${req.body.name}`,
+                    });
+                } else {
+                    res.send({
+                        success: false,
+                        error: "Couldn't update  ",
+                    });
+                }
+            } catch (error) {
+                res.send({
+                    success: false,
+                    error: error.message,
+                });
+            }
+        });
+        // app.put('/storing/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const filter = { _id: ObjectId(id) };
+        //     const user = req.body;
+        //     const option = { upsert: true };
+        //     const updatedUser = {
+        //         $set: {
+        //             clientName: user.clientName,
+        //             sectors: user.sectors
+        //         }
+        //     };
+        //     const result = await storedCollection.updateOne(filter, updatedUser, option);
+        //     res.send(result);
+        // });
 
 
 
