@@ -36,6 +36,13 @@ async function run() {
             console.log('Data added successfully...');
         });
 
+        app.get('/storing', async (req, res) => {
+            const query = {};
+            const cursor = storedCollection.find(query);
+            const stored = await cursor.toArray();
+            res.send(stored);
+        });
+
         app.get('/storing/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -43,44 +50,44 @@ async function run() {
             res.send(store);
         });
 
-        app.patch('/storing/:id', async (req, res) => {
-            const { id } = req.params;
+        // app.patch('/storing/:id', async (req, res) => {
+        //     const { id } = req.params;
 
-            try {
-                const result = await storedCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
+        //     try {
+        //         const result = await storedCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
 
-                if (result.matchedCount) {
-                    res.send({
-                        success: true,
-                        message: `successfully updated ${req.body.name}`,
-                    });
-                } else {
-                    res.send({
-                        success: false,
-                        error: "Couldn't update  ",
-                    });
-                }
-            } catch (error) {
-                res.send({
-                    success: false,
-                    error: error.message,
-                });
-            }
-        });
-        // app.put('/storing/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const filter = { _id: ObjectId(id) };
-        //     const user = req.body;
-        //     const option = { upsert: true };
-        //     const updatedUser = {
-        //         $set: {
-        //             clientName: user.clientName,
-        //             sectors: user.sectors
+        //         if (result.matchedCount) {
+        //             res.send({
+        //                 success: true,
+        //                 message: `successfully updated ${req.body.name}`,
+        //             });
+        //         } else {
+        //             res.send({
+        //                 success: false,
+        //                 error: "Couldn't update  ",
+        //             });
         //         }
-        //     };
-        //     const result = await storedCollection.updateOne(filter, updatedUser, option);
-        //     res.send(result);
+        //     } catch (error) {
+        //         res.send({
+        //             success: false,
+        //             error: error.message,
+        //         });
+        //     }
         // });
+        app.put('/storing/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const user = req.body;
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    name: user.name,
+                    sectors: user.sectors
+                }
+            };
+            const result = await storedCollection.updateOne(filter, updatedUser, option);
+            res.send(result);
+        });
 
 
 
